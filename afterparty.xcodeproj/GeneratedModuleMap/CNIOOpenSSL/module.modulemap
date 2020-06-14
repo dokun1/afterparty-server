@@ -1,0 +1,4 @@
+module CNIOOpenSSL {
+    umbrella "/Users/davidokun/Afterparty/afterparty-server/.build/checkouts/swift-nio-ssl/Sources/CNIOOpenSSL/include"
+    export *
+}

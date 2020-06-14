@@ -1,0 +1,4 @@
+module CCryptoOpenSSL {
+    umbrella "/Users/davidokun/Afterparty/afterparty-server/.build/checkouts/crypto/Sources/CCryptoOpenSSL/include"
+    export *
+}

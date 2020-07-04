@@ -1,0 +1,39 @@
+on:
+  push:
+    branches: 
+      - main
+
+jobs:
+   
+   build:
+     name: Build, push, and deploy
+     runs-on: ubuntu-latest
+     steps:
+     - name: Checkout main
+       uses: actions/checkout@main
+
+     - name: Update SHA
+       run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/_meta
+       
+     - name: Build container image
+       run: docker build -t dokun1/afterparty-server-testing:$(echo $GITHUB_SHA | head -c7) -f web.Dockerfile --build-arg env=docker .
+   
+     - name: install doctl
+       uses: digitalocean/action-doctl@v2
+       with:
+         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+       
+     - name: Log into DockerHub
+       run: docker login -u dokun1 -p {{ secrets.DOCKER_PASSWORD }}
+       
+     - name: Push new image to DockerHub
+       run: docker push dokun1/afterparty-server-testing:$(echo $GITHUB_SHA | head -c7)
+     
+     - name: Save DO kubeconfig
+       run: doctl kubernetes cluster kubeconfig save david-digital-ocean-testing-cluster
+     
+     - name: Deploy to DO Kubernetes
+       run: kubectl apply -f $GITHUB_WORKSPACE/kube/afterparty-deployment.yaml
+     
+     - name: Verify deployment
+       run: kubectl rollout status deployment/afterparty

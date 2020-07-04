@@ -16,7 +16,7 @@ jobs:
        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/_meta
 
      - name: Update deployment file
-       run: ./$GITHUB_WORKSPACE/update-version.sh $GITHUB_SHA
+       run: ./update-version.sh $GITHUB_SHA
 
      - name: Check Deployment file
        run: echo $GITHUB_WORKSPACE/kube/afterparty-deployment.yaml

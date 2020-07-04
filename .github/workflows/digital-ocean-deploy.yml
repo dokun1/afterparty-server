@@ -33,7 +33,7 @@ jobs:
          password: ${{ secrets.DOCKER_PASSWORD }}
          repository: dokun1/afterparty-server-testing
          tag_with_sha: true
-         dockerfile: $GITHUB_WORKSPACE/web.Dockerfile
+         dockerfile: ./web.Dockerfile
          build_args: env=docker
 
      - name: Save DO kubeconfig

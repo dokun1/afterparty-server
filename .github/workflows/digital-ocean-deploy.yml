@@ -14,18 +14,18 @@ jobs:
 
      - name: Update SHA
        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/_meta
-       
-     - name: Build container image
-       run: docker build -t dokun1/afterparty-server-testing:$(echo $GITHUB_SHA | head -c7) -f web.Dockerfile --build-arg env=docker .
-   
+
+     - name: Log into DockerHub
+       run: docker login --username dokun1 --password {{ secrets.DOCKER_PASSWORD }}
+
      - name: install doctl
        uses: digitalocean/action-doctl@v2
        with:
          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
        
-     - name: Log into DockerHub
-       run: docker login -u dokun1 -p {{ secrets.DOCKER_PASSWORD }}
-       
+     - name: Build container image
+       run: docker build -t dokun1/afterparty-server-testing:$(echo $GITHUB_SHA | head -c7) -f web.Dockerfile --build-arg env=docker .
+
      - name: Push new image to DockerHub
        run: docker push dokun1/afterparty-server-testing:$(echo $GITHUB_SHA | head -c7)
      

@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: afterparty
-        image: <IMAGE>
+        image: dokun1/afterparty-server-testing:sha-1234567
         ports:
         - containerPort: 8080

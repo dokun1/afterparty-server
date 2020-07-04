@@ -15,11 +15,11 @@ jobs:
      - name: Update SHA
        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/_meta
 
-    #  - name: Log into DockerHub
-    #    uses: azure/docker-login@v1
-    #    with:
-    #      username: 'dokun1'
-    #      password: ${{ secrets.DOCKER_PASSWORD }}
+     - name: Update deployment file
+       run: ./$GITHUB_WORKSPACE/update-version.sh $GITHUB_SHA
+
+     - name: Check Deployment file
+       run: echo $GITHUB_WORKSPACE/kube/afterparty-deployment.yaml
 
      - name: install doctl
        uses: digitalocean/action-doctl@v2
@@ -33,15 +33,13 @@ jobs:
          password: ${{ secrets.DOCKER_PASSWORD }}
          repository: dokun1/afterparty-server-testing
          tag_with_sha: true
+         tags: latest
          dockerfile: ./web.Dockerfile
          build_args: env=docker
 
      - name: Save DO kubeconfig
        run: doctl kubernetes cluster kubeconfig save david-digital-ocean-testing-cluster
     
-     - name: Update deployment file
-       run: TAG='sha-$(echo $GITHUB_SHA | head -c7)' && sed -i 's|<IMAGE>|dokun1/afterparty-server-testing:'${TAG}'|' $GITHUB_WORKSPACE/kube/afterparty-deployment.yaml
- 
      - name: Deploy to DO Kubernetes
        run: kubectl apply -f $GITHUB_WORKSPACE/kube/afterparty-deployment.yaml
      

@@ -13,10 +13,6 @@ public func routes(_ router: Router) throws {
     return "Hello, world!"
   }
  
-  router.get("versioning") { req in
-    return "This is the latest version!"
-  }
-  
   router.get("hello", String.parameter) { req -> String in
     let name = try req.parameters.next(String.self)
     return "Hello \(name)"

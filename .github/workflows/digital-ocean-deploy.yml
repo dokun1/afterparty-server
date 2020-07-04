@@ -18,22 +18,18 @@ jobs:
      - name: Update deployment file
        run: ./update-version.sh $GITHUB_SHA
 
-     - name: Check Deployment file
-       run: echo $GITHUB_WORKSPACE/kube/afterparty-deployment.yaml
-
      - name: install doctl
        uses: digitalocean/action-doctl@v2
        with:
          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
        
-     - name: Build container image
+     - name: Build container image With SHA
        uses: docker/build-push-action@v1
        with:
          username: dokun1
          password: ${{ secrets.DOCKER_PASSWORD }}
          repository: dokun1/afterparty-server-testing
          tag_with_sha: true
-         tags: latest
          dockerfile: ./web.Dockerfile
          build_args: env=docker
 

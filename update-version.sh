@@ -4,7 +4,7 @@ tagName=${1}
 shortenedTag="$(echo $tagName | head -c 7)"
 shaTag="sha-${shortenedTag}"
 
-echo $shaTag
+echo "Building Image Version: $shaTag"
 
 rm -f ./kube/afterparty-deployment.yaml
 

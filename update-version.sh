@@ -1,7 +1,8 @@
 #!/bin/bash
 
 tagName=${1}
-shaTag="sha-${tagName}"
+shortenedTag="$(echo $tagName | head -c 7)"
+shaTag="sha-${shortenedTag}"
 
 echo $shaTag
 

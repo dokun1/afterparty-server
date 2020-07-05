@@ -30,7 +30,6 @@ jobs:
          password: ${{ secrets.DOCKER_PASSWORD }}
          repository: dokun1/afterparty-server-testing
          tag_with_sha: true
-         dockerfile: ./web.Dockerfile
          build_args: env=docker
 
      - name: Build container image with latest tag
@@ -40,7 +39,6 @@ jobs:
          password: ${{ secrets.DOCKER_PASSWORD }}
          repository: dokun1/afterparty-server-testing
          tags: latest
-         dockerfile: ./web.Dockerfile
          build_args: env=docker
 
      - name: Save DO kubeconfig

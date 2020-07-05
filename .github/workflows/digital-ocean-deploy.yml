@@ -23,13 +23,23 @@ jobs:
        with:
          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
        
-     - name: Build container image With SHA
+     - name: Build container image with SHA tag
        uses: docker/build-push-action@v1
        with:
          username: dokun1
          password: ${{ secrets.DOCKER_PASSWORD }}
          repository: dokun1/afterparty-server-testing
          tag_with_sha: true
+         dockerfile: ./web.Dockerfile
+         build_args: env=docker
+
+     - name: Build container image with latest tag
+       uses: docker/build-push-action@v1
+       with:
+         username: dokun1
+         password: ${{ secrets.DOCKER_PASSWORD }}
+         repository: dokun1/afterparty-server-testing
+         tags: latest
          dockerfile: ./web.Dockerfile
          build_args: env=docker
 

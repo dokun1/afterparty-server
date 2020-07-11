@@ -1,0 +1,50 @@
+on:
+    release
+  
+  jobs:
+     
+     build:
+       name: Build, push, and deploy
+       runs-on: ubuntu-latest
+       steps:
+       - name: Checkout main
+         uses: actions/checkout@master
+  
+       - name: Update SHA
+         run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/_meta
+  
+       - name: Update deployment file
+         run: ./update-prod-version.sh $GITHUB_SHA
+  
+       - name: install doctl
+         uses: digitalocean/action-doctl@v2
+         with:
+           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+         
+       - name: Build container image with SHA tag
+         uses: docker/build-push-action@v1
+         with:
+           username: dokun1
+           password: ${{ secrets.DOCKER_PASSWORD }}
+           repository: dokun1/afterparty-server
+           tag_with_sha: true
+           build_args: env=docker
+  
+       - name: Build container image with latest tag
+         uses: docker/build-push-action@v1
+         with:
+           username: dokun1
+           password: ${{ secrets.DOCKER_PASSWORD }}
+           repository: dokun1/afterparty-server
+           tags: latest
+           build_args: env=docker
+  
+       - name: Save DO kubeconfig
+         run: doctl kubernetes cluster kubeconfig save afterparty-cluster
+      
+       - name: Deploy to DO Kubernetes
+         run: kubectl apply -f $GITHUB_WORKSPACE/kube/afterparty-deployment.yaml
+       
+       - name: Verify deployment
+         run: kubectl rollout status deployment/afterparty
+  

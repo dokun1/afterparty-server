@@ -33,15 +33,6 @@ jobs:
          tag_with_sha: true
          build_args: env=docker
 
-     - name: Build container image with latest tag
-       uses: docker/build-push-action@v1
-       with:
-         username: dokun1
-         password: ${{ secrets.DOCKER_PASSWORD }}
-         repository: dokun1/afterparty-server
-         tags: "staging-${GITHUB_REF}"
-         build_args: env=docker
-
      - name: Save DO kubeconfig
        run: doctl kubernetes cluster kubeconfig save afterparty-cluster
     

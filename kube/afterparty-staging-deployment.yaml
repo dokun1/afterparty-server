@@ -13,7 +13,7 @@ spec:
         app: afterparty-staging
     spec:
       containers:
-      - name: afterparty
-        image: dokun1/afterparty-server-testing:staging
+      - name: afterparty-staging
+        image: dokun1/afterparty-server:staging
         ports:
         - containerPort: 8080

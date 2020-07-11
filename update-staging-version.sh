@@ -11,7 +11,7 @@ rm -f ./kube/afterparty-staging-deployment.yaml
 echo 'apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: afterparty
+  name: afterparty-staging
 spec:
   selector:
     matchLabels:

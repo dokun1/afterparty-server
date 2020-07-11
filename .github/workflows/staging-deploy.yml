@@ -39,7 +39,7 @@ jobs:
          username: dokun1
          password: ${{ secrets.DOCKER_PASSWORD }}
          repository: dokun1/afterparty-server
-         tags: staging-$GITHUB_REF
+         tags: "staging-${GITHUB_REF}"
          build_args: env=docker
 
      - name: Save DO kubeconfig

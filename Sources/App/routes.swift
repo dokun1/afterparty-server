@@ -5,17 +5,17 @@ import afterparty_models_swift
 public func routes(_ router: Router) throws {
   // Basic "It works" example
   router.get { req in
-    return "It works!"
+    return "It works! This is in staging!"
   }
   
   // Basic "Hello, world!" example
   router.get("hello") { req in
-    return "Hello, world!"
+    return "Hello, world! The date is: \(Date())"
   }
  
   router.get("hello", String.parameter) { req -> String in
     let name = try req.parameters.next(String.self)
-    return "Hello \(name)"
+    return "Hello \(name)! The date is: \(Date())"
   }
   
   router.get("mockUsers") { req -> String in

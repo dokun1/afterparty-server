@@ -1,7 +1,10 @@
 name: Deploy to Prod
 on:
     release:
-      types: [published, created, edited]
+      types: 
+        - created
+        - published
+        - edited
   
   jobs:
      

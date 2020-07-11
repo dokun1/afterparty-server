@@ -16,7 +16,7 @@ jobs:
        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/_meta
 
      - name: Update deployment file
-       run: ./update-version.sh $GITHUB_SHA
+       run: ./update-staging-version.sh $GITHUB_SHA
 
      - name: install doctl
        uses: digitalocean/action-doctl@v2
@@ -28,7 +28,7 @@ jobs:
        with:
          username: dokun1
          password: ${{ secrets.DOCKER_PASSWORD }}
-         repository: dokun1/afterparty-server-testing
+         repository: dokun1/afterparty-server
          tag_with_sha: true
          build_args: env=docker
 
@@ -37,15 +37,15 @@ jobs:
        with:
          username: dokun1
          password: ${{ secrets.DOCKER_PASSWORD }}
-         repository: dokun1/afterparty-server-testing
-         tags: latest
+         repository: dokun1/afterparty-server
+         tags: "staging-'$GITHUB_REF'"
          build_args: env=docker
 
      - name: Save DO kubeconfig
-       run: doctl kubernetes cluster kubeconfig save david-digital-ocean-testing-cluster
+       run: doctl kubernetes cluster kubeconfig save afterparty-cluster
     
      - name: Deploy to DO Kubernetes
-       run: kubectl apply -f $GITHUB_WORKSPACE/kube/afterparty-deployment.yaml
+       run: kubectl apply -f $GITHUB_WORKSPACE/kube/afterparty-staging-deployment.yaml
      
      - name: Verify deployment
-       run: kubectl rollout status deployment/afterparty
+       run: kubectl rollout status deployment/afterparty-staging

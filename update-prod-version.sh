@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: afterparty
-        image: dokun1/afterparty-server-testing:'$shaTag'
+        image: dokun1/afterparty-server:'$shaTag'
         ports:
         - containerPort: 8080' > ./kube/afterparty-deployment.yaml
 

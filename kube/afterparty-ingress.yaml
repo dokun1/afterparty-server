@@ -9,6 +9,7 @@ spec:
   tls:
   - hosts:
     - api.afterparty.tech
+    - api.staging.afterparty.tech
     secretName: afterparty-api-tls
   rules:
   - host: api.afterparty.tech
@@ -16,4 +17,10 @@ spec:
       paths:
       - backend:
           serviceName: afterparty
+          servicePort: 80
+  - host: api.staging.afterparty.tech
+    http:
+      paths:
+      - backend:
+          serviceName: afterparty-staging
           servicePort: 80

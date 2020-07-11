@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: afterparty
+  name: afterparty-staging
 spec:
   selector:
     matchLabels:
-      app: afterparty
+      app: afterparty-staging
   replicas: 1
   template:
     metadata:
       labels:
-        app: afterparty
+        app: afterparty-staging
     spec:
       containers:
       - name: afterparty
-        image: dokun1/afterparty-server:latest
+        image: dokun1/afterparty-server-testing:staging
         ports:
         - containerPort: 8080

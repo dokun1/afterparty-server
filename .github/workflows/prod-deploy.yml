@@ -36,7 +36,7 @@ jobs:
           username: dokun1
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: dokun1/afterparty-server
-          tags: $release_tag
+          tags: "${release_tag}"
           build_args: env=docker
 
       - name: Build container image with latest tag

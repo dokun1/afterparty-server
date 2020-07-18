@@ -1,8 +1,7 @@
 name: Deploy to Prod
 on:
   release:
-    types:
-      - created
+    types: [published, created, prereleased, released]
 jobs:
   build:
     name: Build, push, and deploy
@@ -12,13 +11,13 @@ jobs:
         uses: actions/checkout@master
         
       - name: Display the release tag
-        run: echo ${{ github.event.release.tag_name }}
+        run: echo $GITHUB_REF
 
       - name: Update tag name
-        run: echo ${{ github.event.release.tag_name }} > $GITHUB_WORKSPACE/_meta
+        run: echo $GITHUB_REF > $GITHUB_WORKSPACE/_meta
 
       - name: Update deployment file
-        run: ./update-prod-version.sh ${{ github.event.release.tag_name }}
+        run: ./update-prod-version.sh $GITHUB_REF
 
       - name: install doctl
         uses: digitalocean/action-doctl@v2
@@ -31,7 +30,7 @@ jobs:
           username: dokun1
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: dokun1/afterparty-server
-          tags: ${{ github.event.release.tag_name }}
+          tags: $GITHUB_REF
           build_args: env=docker
 
       - name: Build container image with latest tag

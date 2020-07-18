@@ -10,7 +10,7 @@ public func routes(_ router: Router) throws {
   
   // Basic "Hello, world!" example
   router.get("hello") { req in
-    return "Hello, world! The date is: \(Date())"
+    return "Hello, world!"
   }
  
   router.get("hello", String.parameter) { req -> String in

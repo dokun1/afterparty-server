@@ -11,24 +11,24 @@ jobs:
       - name: Checkout main
         uses: actions/checkout@master
 
-      - name: Update SHA
-        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/_meta
+      - name: Update tag name
+        run: echo ${{ github.event.release.tag_name }} > $GITHUB_WORKSPACE/_meta
 
       - name: Update deployment file
-        run: ./update-prod-version.sh $GITHUB_SHA
+        run: ./update-prod-version.sh ${{ github.event.release.tag_name }}
 
       - name: install doctl
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
         
-      - name: Build container image with SHA tag
+      - name: Build container image with release tag
         uses: docker/build-push-action@v1
         with:
           username: dokun1
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: dokun1/afterparty-server
-          tag_with_sha: true
+          tags: ${{ github.event.release.tag_name }}
           build_args: env=docker
 
       - name: Build container image with latest tag

@@ -1,7 +1,8 @@
 name: Deploy to Prod
 on:
-  release:
-    types: [created, published, released] 
+  push:
+    tags:
+      - '*'
 jobs:
   build:
     name: Build, push, and deploy

@@ -5,7 +5,7 @@ import afterparty_models_swift
 public func routes(_ router: Router) throws {
   // Basic "It works" example
   router.get { req in
-    return "It works! This is in staging!"
+    return "It works!"
   }
   
   // Basic "Hello, world!" example

@@ -1,8 +1,8 @@
 name: Deploy to Prod
 on:
-  push:
-    tags:
-      - '*'
+  release:
+    types:
+      - created
 jobs:
   build:
     name: Build, push, and deploy
@@ -10,6 +10,9 @@ jobs:
     steps:
       - name: Checkout main
         uses: actions/checkout@master
+        
+      - name: Display the release tag
+        run: echo ${{ github.event.release.tag_name }}
 
       - name: Update tag name
         run: echo ${{ github.event.release.tag_name }} > $GITHUB_WORKSPACE/_meta

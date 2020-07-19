@@ -12,7 +12,7 @@ jobs:
       - name: Install libressl
         run: brew install libressl
 
-      - name: Build app
+      - name: Run tests
         run: |
           swift package resolve
           swift package clean

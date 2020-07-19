@@ -25,4 +25,3 @@ spec:
         image: dokun1/afterparty-server:'$tagName'
         ports:
         - containerPort: 8080' > ./kube/afterparty-deployment.yaml
-

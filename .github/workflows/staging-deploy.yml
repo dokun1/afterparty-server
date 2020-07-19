@@ -5,39 +5,102 @@ on:
       - main
 
 jobs:
-  
-   build:
-     name: Build, push, and deploy
-     runs-on: ubuntu-latest
-     steps:
-     - name: Checkout main
-       uses: actions/checkout@master
+  mac_build:
+    name: Build on Mac
+    runs-on: macos-10.15
+    steps:
+      - name: Checkout Actions
+        uses: actions/checkout@master
 
-     - name: Update SHA
-       run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/_meta
+      - name: Install libressl
+        run: brew install libressl
 
-     - name: Update deployment file
-       run: ./update-staging-version.sh $GITHUB_SHA
+      - name: Build app
+        run: |
+          swift package resolve
+          swift package clean
+          swift build
 
-     - name: install doctl
-       uses: digitalocean/action-doctl@v2
-       with:
-         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+  linux_tests:
+    needs: mac_build
+    name: Run Linux Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Actions
+        uses: actions/checkout@master
+
+      - name: Run tests
+        run: ./swift-test-linux.sh
+
+  mac_tests:
+    needs: mac_build
+    name: Run Mac Tests
+    runs-on: macos-10.15
+    steps:
+      - name: Checkout Actions
+        uses: actions/checkout@master
+
+      - name: Install libressl
+        run: brew install libressl
+
+      - name: Run tests
+        run: |
+          swift package resolve
+          swift package clean
+          swift test
+
+  build_container:
+    needs: [mac_tests, linux_tests]
+    name: Build Docker container
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@master
+
+      - name: Update SHA
+        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/_meta
+
+      - name: Update deployment file
+        run: ./update-staging-version.sh $GITHUB_SHA
+
+      - name: install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
        
-     - name: Build container image with SHA tag
-       uses: docker/build-push-action@v1
-       with:
-         username: dokun1
-         password: ${{ secrets.DOCKER_PASSWORD }}
-         repository: dokun1/afterparty-server
-         tag_with_sha: true
-         build_args: env=docker
+      - name: Build container image with SHA tag
+        uses: docker/build-push-action@v1
+        with:
+          username: dokun1
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: dokun1/afterparty-server
+          tag_with_sha: true
+          build_args: env=docker
 
-     - name: Save DO kubeconfig
-       run: doctl kubernetes cluster kubeconfig save afterparty-cluster
+  deploy:
+    needs: build_container
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@master
+
+      - name: Update SHA
+        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/_meta
+
+      - name: Update deployment file
+        run: ./update-staging-version.sh $GITHUB_SHA
+
+      - name: install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Save DO kubeconfig
+        run: doctl kubernetes cluster kubeconfig save afterparty-cluster
     
-     - name: Deploy to DO Kubernetes
-       run: kubectl apply -f $GITHUB_WORKSPACE/kube/afterparty-staging-deployment.yaml
-     
-     - name: Verify deployment
-       run: kubectl rollout status deployment/afterparty-staging
+      - name: Deploy to DO Kubernetes
+        run: kubectl apply -f $GITHUB_WORKSPACE/kube/afterparty-staging-deployment.yaml
+      
+      - name: Verify deployment
+        run: kubectl rollout status deployment/afterparty-staging

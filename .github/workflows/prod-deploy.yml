@@ -57,12 +57,6 @@ jobs:
       - name: Checkout main
         uses: actions/checkout@master
 
-      - name: Update SHA
-        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/_meta
-
-      - name: Update deployment file
-        run: ./update-staging-version.sh $GITHUB_SHA
-
       - name: install doctl
         uses: digitalocean/action-doctl@v2
         with:
@@ -74,7 +68,7 @@ jobs:
           username: dokun1
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: dokun1/afterparty-server
-          tag_with_sha: true
+          tag_with_ref: true
           build_args: env=docker
 
   deploy:

@@ -9,6 +9,9 @@ jobs:
       - name: Checkout Actions
         uses: actions/checkout@master
 
+      - name: Install libressl
+        run: brew install libressl
+
       - name: Build app
         run: |
           swift package resolve

@@ -6,7 +6,10 @@ extension EventTests {
     //   `swift test --generate-linuxmain`
     // to regenerate.
     static let __allTests__EventTests = [
+        ("testBadEventRoute", testBadEventRoute),
         ("testMockEvents", testMockEvents),
+        ("testRandomEvent", testRandomEvent),
+        ("testSortedEvents", testSortedEvents),
     ]
 }
 
@@ -15,7 +18,10 @@ extension LocationTests {
     //   `swift test --generate-linuxmain`
     // to regenerate.
     static let __allTests__LocationTests = [
+        ("testBadLocationRoute", testBadLocationRoute),
         ("testMockLocations", testMockLocations),
+        ("testRandomLocation", testRandomLocation),
+        ("testSortedLocations", testSortedLocations),
     ]
 }
 
@@ -24,7 +30,10 @@ extension UserTests {
     //   `swift test --generate-linuxmain`
     // to regenerate.
     static let __allTests__UserTests = [
+        ("testBadUserRoute", testBadUserRoute),
         ("testMockUsers", testMockUsers),
+        ("testRandomUser", testRandomUser),
+        ("testSortedUsers", testSortedUsers),
     ]
 }
 

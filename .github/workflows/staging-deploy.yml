@@ -13,6 +13,9 @@ jobs:
      - name: Checkout main
        uses: actions/checkout@master
 
+     - name: Run tests
+       run: ./swift-test-linux.sh
+
      - name: Update SHA
        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/_meta
 

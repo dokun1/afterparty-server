@@ -1,0 +1,14 @@
+name: Run Tests On Pull Request
+on:
+    pull_request:
+      types: [assigned, opened, synchronize, reopened]
+jobs:
+  build:
+    name: Build, push, and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@master
+
+      - name: Run tests
+        run: ./swift-test-linux.sh

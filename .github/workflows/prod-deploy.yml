@@ -1,7 +1,8 @@
 name: Deploy to Prod
 on:
-  release:
-    types: [created, published, released] 
+  push:
+    tags:
+    - '*'
 jobs:
   build:
     name: Build, push, and deploy
@@ -10,24 +11,35 @@ jobs:
       - name: Checkout main
         uses: actions/checkout@master
 
-      - name: Update SHA
-        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/_meta
+      - name: Run tests
+        run: ./swift-test-linux.sh
+        
+      - name: Display the release tag
+        run: |
+          echo $GITHUB_REF
+          fullRef=$GITHUB_REF
+          IFS='/' read -a refs <<< "${fullRef}"
+          echo ${refs[2]}
+          echo "::set-env name=release_tag::${refs[2]}"
+
+      - name: Update tag name
+        run: echo $release_tag > $GITHUB_WORKSPACE/_meta
 
       - name: Update deployment file
-        run: ./update-prod-version.sh $GITHUB_SHA
+        run: ./update-prod-version.sh $release_tag
 
       - name: install doctl
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
         
-      - name: Build container image with SHA tag
+      - name: Build container image with release tag
         uses: docker/build-push-action@v1
         with:
           username: dokun1
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: dokun1/afterparty-server
-          tag_with_sha: true
+          tag_with_ref: true
           build_args: env=docker
 
       - name: Build container image with latest tag

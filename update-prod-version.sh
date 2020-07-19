@@ -1,10 +1,8 @@
 #!/bin/bash
 
 tagName=${1}
-shortenedTag="$(echo $tagName | head -c 7)"
-shaTag="sha-${shortenedTag}"
 
-echo "Building Image Version: $shaTag"
+echo "Building Image Version: $tagName"
 
 rm -f ./kube/afterparty-deployment.yaml
 
@@ -24,7 +22,6 @@ spec:
     spec:
       containers:
       - name: afterparty
-        image: dokun1/afterparty-server:'$shaTag'
+        image: dokun1/afterparty-server:'$tagName'
         ports:
         - containerPort: 8080' > ./kube/afterparty-deployment.yaml
-

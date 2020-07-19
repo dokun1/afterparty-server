@@ -1,4 +1,4 @@
-name: Run Tests On Pull Request
+name: Pull Request Testing
 on:
   pull_request:
 jobs:
@@ -19,5 +19,11 @@ jobs:
       - name: Checkout Actions
         uses: actions/checkout@master
 
+      - name: Install libressl
+        run: brew install libressl
+
       - name: Run tests
-        run: swift test
+        run: |
+          swift package resolve
+          swift package clean
+          swift test

@@ -62,7 +62,7 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
        
-      - name: Build container image with SHA tag
+      - name: Build container image with new release tag
         uses: docker/build-push-action@v1
         with:
           username: dokun1
